@@ -1,0 +1,92 @@
+﻿<Window x:Class="YugiohShop.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:YugiohShop" 
+        xmlns:viewmodel="clr-namespace:YugiohShop.ViewModel" 
+        xmlns:local1="clr-namespace:YugiohShop.View" 
+        d:DataContext="{d:DesignInstance Type=viewmodel:MainViewModel}"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="800" Width="1000">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type viewmodel:ProductViewModel}">
+            <local1:ProductView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodel:DashboardViewModel}">
+            <local1:DashboardView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodel:BillsViewModel}">
+            <local1:BillView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodel:CartViewModel}">
+            <local1:CartView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodel:ManageAccountViewModel}">
+            <local1:ManageAccountView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewmodel:DailyBillViewModel}">
+            <local1:DailyBillView/>
+        </DataTemplate>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <Style x:Key="MenuButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#9B4444"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                            <Grid>
+                                <Ellipse Name="Dot" Fill="White" Width="5" Height="5" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0" Visibility="Collapsed"/>
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter TargetName="Dot" Property="Visibility" Value="Visible"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid Background="#E3E3E3" Height="790" VerticalAlignment="Top">
+        <!-- Left Panel -->
+        <Border Background="#1a1a1a"  VerticalAlignment="Top">
+            <StackPanel VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,20" Orientation="Horizontal" >
+                <TextBlock Text="{Binding CurrentAccount.Name, StringFormat='Welcome, {0}'}" Foreground="Gold" FontSize="16" FontWeight="Bold" TextAlignment="Center" Margin="0,0,80,0" VerticalAlignment="Center"/>
+
+                <!-- Admin Menu (Type == 1) -->
+                <StackPanel Visibility="{Binding IsAdminVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Orientation="Horizontal" >
+                    <Button Content="Product List" Style="{StaticResource MenuButtonStyle}" Background="Gold"  Command="{Binding NavigateToProductListCommand}" Width="80" Foreground="#1a1a1a"/>
+                    <Button Content="Dashboard" Name="DashboardBtn" Style="{StaticResource MenuButtonStyle}" Command="{Binding NavigateToDashboardCommand}" Width="80" Background="Gold" Foreground="#1a1a1a"/>
+                    <Button Content="Bills" Name="BillBtn" Style="{StaticResource MenuButtonStyle}" Command="{Binding NavigateToBillsCommand}" Width="80" Background="Gold" Foreground="#1a1a1a"/>
+                    <Button Content="Accounts" Name="AccountBtn" Style="{StaticResource MenuButtonStyle}" Command="{Binding NavigateToAccountsCommand}" Width="80" Background="Gold"  Foreground="#1a1a1a"/>
+                </StackPanel>
+
+                <!-- Staff Menu (Type == 2) -->
+                <StackPanel Visibility="{Binding IsStaffVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Orientation="Horizontal" >
+                    <Button Content="Orders" Style="{StaticResource MenuButtonStyle}" Command="{Binding NavigateToOrdersCommand}" Width="80" Background="Gold" Foreground="#1a1a1a"/>
+                    <Button Content="Daily Bills" Style="{StaticResource MenuButtonStyle}" Command="{Binding NavigateToDailyBillsCommand}" Width="80" Background="Gold" Foreground="#1a1a1a"/>
+                </StackPanel>
+                <StackPanel Visibility="{Binding IsUserVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Orientation="Horizontal" >
+                    <Button Content="Store" Style="{StaticResource MenuButtonStyle}" Command="{Binding NavigateToProductListCommand}" Width="80" Background="Gold" Foreground="#1a1a1a"/>
+                    <Button Content="Cart" Style="{StaticResource MenuButtonStyle}" Command="{Binding NavigateToCartCommand}" Width="80" Background="Gold" Foreground="#1a1a1a"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" >
+                    <Button Content="Log Out" Style="{StaticResource MenuButtonStyle}" Command="{Binding LogoutCommand}" Width="80" Background="Gold" Foreground="#1a1a1a"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Main Content -->
+        <Grid  VerticalAlignment="Bottom">
+            <ContentControl Grid.Row="1" Content="{Binding CurrentViewModel}"/>
+        </Grid>
+    </Grid>
+</Window>
